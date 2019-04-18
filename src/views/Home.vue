@@ -1,7 +1,12 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>{{ message }}</h1>
+    
+    <form>
+      <p>Intro line: <input type="text" name="intro_line"></p>
+      <p>Choice 1 text: <input type="text" name="choice1"></p>
+      <input type="submit" value="Add choice menu">
+    </form>
   </div>
 </template>
 
@@ -10,9 +15,11 @@
 import HelloWorld from '@/components/HelloWorld.vue'
 
 export default {
-  name: 'home',
-  components: {
-    HelloWorld
+  data: function() {
+    return {
+      message: "Hello world!",
+      characters: []
+    };
   }
 }
 </script>
