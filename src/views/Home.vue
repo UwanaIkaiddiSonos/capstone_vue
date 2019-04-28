@@ -2,6 +2,10 @@
   <div class="home">
     <h1>{{ message }}</h1>
     
+    <select>
+        <option v-for="character in characters">{{ character.first_name }}</option>
+      </select>
+
     <form> <!--Label form-->
       <p>Scene: <select name="scene">
         <option value="meadow">Meadow</option>
@@ -36,19 +40,18 @@
 <hr>
 
     <form> <!--Menu form-->
+      <p>Intro line: <input type="text" name="intro_line"></p>
       <p>Choice 1 label: <select name="labels">
         <option value="burger">Burger</option>
         <option value="ramen">Ramen</option>
         <option value="tacos">Taco</option>
       </select></p>
-      <p>Intro line: <input type="text" name="intro_line"></p>
       <p>Choice 1 text: <input type="text" name="choice1"></p>
       <p>Choice 2 label: <select name="labels">
         <option value="burger">Burger</option>
         <option value="ramen">Ramen</option>
         <option value="tacos">Taco</option>
       </select></p>
-      <p>Intro line: <input type="text" name="intro_line"></p>
       <p>Choice 2 text: <input type="text" name="choice1"></p>
       <input type="submit" value="Add Choice">
     </form>
@@ -56,9 +59,9 @@
 </template>
 
 <script>
-  import axios from "axios"
+import axios from "axios";
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import HelloWorld from '@/components/HelloWorld.vue';
 
 export default {
   data: function() {
@@ -68,11 +71,19 @@ export default {
       newCharacter: {
         first_name: "",
         last_name: "",
-        color: "",
+        color: ""
       }
-
-
     };
-  }
-}
+  },
+  created: function() {
+    // ruby
+    // response = HTTP.get("/api/recipes")
+    // recipes = response.parse
+    // axios.get("/api/recipes").then(function(response) {
+    axios.get("/api/characters").then(response => {
+      this.characters = response.data;
+      // console.log(response.data);
+    })
+  },
+};
 </script>
