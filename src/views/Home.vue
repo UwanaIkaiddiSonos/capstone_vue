@@ -1,16 +1,10 @@
 <template>
   <div class="home">
     <h1>{{ message }}</h1>
-    
-    <select>
-        <option v-for="character in characters">{{ character.first_name }}</option>
-      </select>
 
     <form> <!--Label form-->
-      <p>Scene: <select name="scene">
-        <option value="meadow">Meadow</option>
-        <option value="work">Work</option>
-        <option value="movies">Movies</option>
+      <p>Scene: <select>
+        <option v-for="scene in background_images">{{ background_image.url }}</option>
       </select></p>
 
       <p>Transition:  <select name="transition">
@@ -21,15 +15,8 @@
     </form>
 <hr>
     <form>
-      <p>Character: <select name="character">
-        <option value="tohru">Tohru</option>
-        <option value="yuki">Yuki</option>
-        <option value="kyo">Kyo</option>
-      </select><br><br>
-      Character pose: <select name="character_show">
-        <option value="neutral">Neutral</option>
-        <option value="happy">Happy</option>
-        <option value="sad">Sad</option>
+      <p>Character: <select>
+        <option v-for="character in characters">{{ character.first_name }}</option>
       </select><br>
       Dialogue: <textarea name="dialogue" rows="2" cols="30">
         Enter your character's dialogue...
@@ -55,6 +42,10 @@
       <p>Choice 2 text: <input type="text" name="choice1"></p>
       <input type="submit" value="Add Choice">
     </form>
+<hr>
+    <form>
+      <input type="submit" value="Add label">
+    </form>
   </div>
 </template>
 
@@ -72,17 +63,19 @@ export default {
         first_name: "",
         last_name: "",
         color: ""
+      },
+      background_images: [],
+      newBackgroundImage: {
+        url: ""
       }
     };
   },
   created: function() {
-    // ruby
-    // response = HTTP.get("/api/recipes")
-    // recipes = response.parse
-    // axios.get("/api/recipes").then(function(response) {
     axios.get("/api/characters").then(response => {
       this.characters = response.data;
-      // console.log(response.data);
+    });
+    axios.get("/api/background_images").then(response => {
+      this.background_images = response.data;    
     })
   },
 };
