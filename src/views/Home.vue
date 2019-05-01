@@ -3,27 +3,30 @@
     <h1>{{ message }}</h1>
 
     <form>
-      <p>First Name: <input type="text" v-model="newCharacter.firstName"></p>
-      <p>Last Name: <input type="text" v-model="newCharacter.lastName"></p>
-      <p>Color: <input type="color" v-model="newCharacter.color"></p>
-    <button v-on:click.prevent="addCharacter()">Create character</button>
+      <p>Label:  <select v-model="newLabel.name" name="labels">
+        <option v-for="label in labels">{{ label.name }}</option>
+       </select></p>
     </form>
 <hr>
     <form> <!--Label form-->
-      <p>Scene: <select>
-        <option v-for="background_image in background_images">{{ background_image.name }}</option>
+      <p>Scene: <select v-model="newScene.name" name="scenes">
+        <option v-for="background_image in background_images">{{ background_image.scene_name }}</option>
       </select></p>
 
-      <p>Transition:  <select name="transition">
+      <p>Transition:  <select v-model="newTransition.name" name="transition">
         <option v-for="transition in transitions">{{ transition.name }}</option>
       </select></p>
     </form>
 <hr>
     <form>
-      <p>Character: <select>
+      <p>Character: <select v-model="newCharacter.firstName">
         <option v-for="character in characters">{{ character.first_name }}</option>
       </select><br>
-      Dialogue: <textarea name="dialogue" rows="2" cols="30">
+      <!--Need to figure out how to connect character name and color-->
+      <select v-model="newCharacter.color">
+        <option v-for="character in characters">{{ character.color }}</option>
+      </select><br>
+      Dialogue: <textarea v-model="dialogue" name="dialogue" rows="2" cols="30">
         Enter your character's dialogue...
       </textarea>
       </p>
@@ -32,6 +35,9 @@
 <hr>
 
     <form> <!--Menu form-->
+      <p>Menu: <select name="labels">
+        <option v-for="label in labels">{{ newLabel.labelName }}</option>
+       </select></p>
       <p>Intro line: <input type="text" name="intro_line"></p>
       <p>Choice 1 label: <select name="labels">
         <option v-for="label in labels">{{ label.name }}</option>
@@ -44,8 +50,10 @@
       <input type="submit" value="Add Choice">
     </form>
 <hr>
-    <form>
-      <input type="submit" value="Add label">
+    <form v-on:submit.prevent="Generate()">
+      <input type="submit" value="Generate"><br><br>
+      <textarea readonly name="final" rows="20" cols="30">{{ output['output'] }}
+      </textarea>
     </form>
   </div>
 </template>
@@ -58,24 +66,25 @@ import HelloWorld from '@/components/HelloWorld.vue';
 export default {
   data: function() {
     return {
+      output: "",
       message: "Hello world!",
       characters: [],
       newCharacter: {
         firstName: "",
         lastName: "",
-        color: "#000000"
+        color: ""
       },
       background_images: [],
       newScene: {
-        name: ""
+        sceneName: ""
       },
       labels: [],
       newLabel: {
-        name: ""
+        labelName: ""
       },
       transitions: [],
       newTransition: {
-        name: ""
+        transitionName: ""
       },
     };
   },
@@ -94,15 +103,18 @@ export default {
     })
   },
   methods: {
-    addCharacter: function() {
-      console.log('editing contact');
+    Generate: function() {
+      console.log('translating into RenPy syntax');
       var params = {
         input_first_name: this.newCharacter.firstName,
-        input_last_name: this.newCharacter.lastName,
-        input_color: this.newCharacter.color
+        input_color: this.newCharacter.color,
+        input_label_name: this.newLabel.name,
+        input_scene_name: this.newScene.sceneName,
+        input_transition_name: this.newTransition.transitionName
       }
-      axios.post("/api/characters", params).then(response => {
-        console.log(response);
+      console.log(params)
+      axios.post("/api/drafts", params).then(response => {
+      this.output = response.data;
       });
     }
   }
