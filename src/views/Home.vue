@@ -22,11 +22,14 @@
       <p>Character: <select v-model="newCharacter.firstName">
         <option v-for="character in characters">{{ character.first_name }}</option>
       </select><br>
+      <!-- <p>Character: <select v-model="newCharacter.firstName" v-on:change="setColor($event)">
+        <option v-for="character in characters">{{ character.first_name }}</option>
+      </select><br> -->
       <!--Need to figure out how to connect character name and color-->
       <select v-model="newCharacter.color">
         <option v-for="character in characters">{{ character.color }}</option>
       </select><br>
-      Dialogue: <textarea v-model="dialogue" name="dialogue" rows="2" cols="30">
+      Dialogue: <textarea name="dialogue" v-model="newDialogue.dialogueText" rows="2" cols="30"> 
         Enter your character's dialogue...
       </textarea>
       </p>
@@ -35,18 +38,18 @@
 <hr>
 
     <form> <!--Menu form-->
-      <p>Menu: <select name="labels">
-        <option v-for="label in labels">{{ newLabel.labelName }}</option>
+      <p>Menu: <select name="labels" v-model="newMenu.menuName">
+        <option v-for="label in labels">{{ label.name }}</option>
        </select></p>
-      <p>Intro line: <input type="text" name="intro_line"></p>
-      <p>Choice 1 label: <select name="labels">
+      <p>Intro line: <input type="text" v-model="newMenu.introText" name="intro_line"></p>
+      <p>Choice 1 label: <select name="labels" v-model="newMenu.choiceLabel1">
         <option v-for="label in labels">{{ label.name }}</option>
       </select></p>
-      <p>Choice 1 text: <input type="text" name="choice1"></p>
-      <p>Choice 2 label: <select name="labels">
+      <p>Choice 1 text: <input type="text" name="choice1" v-model="newMenu.choice1"></p>
+      <p>Choice 2 label: <select name="labels" v-model="newMenu.choiceLabel2">
         <option v-for="label in labels">{{ label.name }}</option>
       </select></p>
-      <p>Choice 2 text: <input type="text" name="choice1"></p>
+      <p>Choice 2 text: <input type="text" name="choice1" v-model="newMenu.choice2"></p>
       <input type="submit" value="Add Choice">
     </form>
 <hr>
@@ -86,6 +89,20 @@ export default {
       newTransition: {
         transitionName: ""
       },
+      dialogues: [],
+      newDialogue: {
+        dialogueText: ""
+      },
+      menu: [],
+      newMenu: {
+        menuName: "",
+        introText: "",
+        choice1: "",
+        choiceLabel1: "",
+        choice2: "",
+        choiceLabel2: ""
+
+      }
     };
   },
   created: function() {
@@ -109,13 +126,25 @@ export default {
         input_first_name: this.newCharacter.firstName,
         input_color: this.newCharacter.color,
         input_label_name: this.newLabel.name,
-        input_scene_name: this.newScene.sceneName,
-        input_transition_name: this.newTransition.transitionName
+        input_scene_name: this.newScene.name,
+        input_transition_name: this.newTransition.name,
+        input_dialogue: this.newDialogue.dialogueText,
+        input_menu: this.newMenu.menuName,
+        input_intro: this.newMenu.introText,
+        input_choice1_label: this.newMenu.choice1,
+        input_choice1: this.newMenu.choiceLabel1,
+        input_choice2_label: this.newMenu.choice2,
+        input_choice2: this.newMenu.choiceLabel2
+
       }
       console.log(params)
       axios.post("/api/drafts", params).then(response => {
       this.output = response.data;
       });
+    // },
+    // setColor: function(event) {
+    //   console.log('setting color')
+    //   console.log(event);
     }
   }
 };
