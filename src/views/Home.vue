@@ -4,7 +4,7 @@
   <section class="split-image parallax" data-background="assets/images/module-7.jpg">
     <div class="container-fluid container-custom">
       <br><br>
-              <textarea readonly name="final" rows="32" cols="90">{{ output['output'] }}
+              <textarea readonly name="final" rows="30" cols="30">{{ output['output'] }}
               </textarea>
     </div>
   </section>
@@ -19,14 +19,16 @@
 
           <!-- Label Section -->
 
-          <Label labelName="newLabel.labelName" v-bind:labelArray="labels"></Label>
-
+          <!-- <Label labelName="newLabel.labelName" v-bind:labelArray="labels"></Label> -->
+          <button v-on:click="addLabel()">Add new label dropdown</button>
           <form>
+            <div v-for="oneLabel, $index in listOfLabels">
             <p>Label:  
-              <select v-model="newLabel.labelName" >
-                <option v-for="label in labels">{{ label.name }}</option>
+              <select v-model="selectedLabels[$index]">
+                <option v-for="label in oneLabel">{{ label.name }}</option>
               </select>
             </p>
+          </div>
           </form>
 
       <hr>
@@ -91,10 +93,10 @@
               <button type="button" v-on:click="addFormElement('choice-select')">Add Choice</button>
             </form>
       <hr>
-
-          <form v-on:submit.prevent="Generate()"> <!--Generate button-->
-              <button type="submit" v-bind:disabled="!formIsValid()">Generate</button>
-          </form>
+          <button v-on:click="Generate()">Genera draft</button>
+            <form v-on:submit.prevent="Generate()"> <!--Generate button-->
+              <button type="submit">Generate</button>
+            </form>
         </div>
       </div>
     </section>
@@ -126,7 +128,6 @@ export default {
       characters: [],
       newCharacter: {
         firstName: " ",
-        lastName: " ",
         color: " "
       },
       background_images: [],
@@ -137,6 +138,9 @@ export default {
       newLabel: {
         labelName: null
       },
+      listOfLabels: [],
+      selectedLabels: [],
+
       transitions: [],
       newTransition: {
         transitionName: " "
@@ -153,7 +157,6 @@ export default {
         choiceLabel1: " ",
         choice2: " ",
         choiceLabel2: " "
-
       }
     };
   },
@@ -168,7 +171,8 @@ export default {
       this.transitions = response.data;    
     });
     axios.get("/api/labels").then(response => {
-      this.labels = response.data;    
+      this.labels = response.data;
+      this.listOfLabels = [this.labels]    
     })
   },
   components: {
@@ -177,6 +181,7 @@ export default {
   methods: {
     Generate: function() {
       console.log('translating into RenPy syntax');
+      console.log(this.selectedLabels);
       var params = {
         input_first_name: this.newCharacter.firstName,
         input_color: this.newCharacter.color,
@@ -208,6 +213,9 @@ export default {
     formIsValid: function() {
       return this.newLabel.labelName;
     },
+    addLabel: function() {
+      this.listOfLabels.push(this.labels)
+    }
     // addFormElement: function(type) {
     //   this.fields.push({
     //     'type': type,
