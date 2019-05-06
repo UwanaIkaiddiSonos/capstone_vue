@@ -4,7 +4,7 @@
   <section class="split-image parallax" data-background="assets/images/module-7.jpg">
     <div class="container-fluid container-custom">
       <br><br>
-              <textarea readonly name="final" rows="30" cols="30">{{ output['output'] }}
+              <textarea readonly name="final" rows="20" cols="70">{{ output['output'] }}
               </textarea>
     </div>
   </section>
@@ -17,45 +17,41 @@
           <div class="home">
           <h1>{{ message }}</h1>
 
-          <!-- Label Section -->
-
-          <!-- <Label labelName="newLabel.labelName" v-bind:labelArray="labels"></Label> -->
-          <button v-on:click="addLabel()">Add new label dropdown</button>
           <form>
-            <div v-for="oneLabel, $index in listOfLabels">
+          <!-- Label Section -->
+          <!-- <button v-on:click.prevent="addLabel()">Add new label dropdown</button> -->
+            <!-- <div v-for="oneLabel, $index in listOfLabels"> -->
             <p>Label:  
-              <select v-model="selectedLabels[$index]">
-                <option v-for="label in oneLabel">{{ label.name }}</option>
+              <select v-model="newLabel.labelName">
+                <option v-for="label in labels">{{ label.name }}</option>
               </select>
             </p>
-          </div>
+          <!-- </div> -->
           </form>
-
-      <hr>
-          <!-- Scene Section -->
-
-          <!-- <Scene v-bind:sceneName="newScene.sceneName" v-bind:bgArray="background_images" v-bind:transitionName="newTransition.transitionName" v-bind:transArray="transitions"></Scene> -->
+          <hr>
 
           <form>
+          <!-- Scene Section -->
+          <!-- <button v-on:click.prevent="addScene()">Add new scene</button> -->
+            <!-- <div v-for="oneScene, $index in listOfScenes"> -->
             <p>Scene: 
               <select v-model="newScene.sceneName">
                 <option v-for="background_image in background_images">{{ background_image.scene_name }}</option>
               </select>
             </p>
-
+            <!-- </div> -->
+          <!-- <button v-on:click.prevent="addTransition()">Add new transition</button> -->
+            <!-- <div v-for="oneTransition, $index in listOfTransitions"> -->
             <p>Transition:  
               <select v-model="newTransition.transitionName">
                 <option v-for="transition in transitions">{{ transition.name }}</option>
               </select>
             </p>
-          </form>
-
-      <hr>
+            <!-- </div> -->
+        </form>
+          <hr>
 
           <!-- Character Section -->
-
-          <!-- <Character v-bind:firstName="newCharacter.firstName" @change="findCharacterColor()" v-bind:characters="characters" v-bind:dialogue="newDialogue.dialogueText"></Character> -->
-          <form>
             <p>Character: <select v-model="newCharacter.firstName" @change="findCharacterColor()">
               <option v-for="character in characters">{{ character.first_name }}</option>
             </select></p>
@@ -69,14 +65,9 @@
             </textarea>
             </p>
             <input type="submit" value="Add more dialogue">
-          </form>
-      <hr>
+            <hr>
 
           <!-- Menu Section -->
-
-          <!-- <Menu v-bind:menuName="newMenu.menuName" v-bind:labelArray="labels" v-bind:introText="newMenu.introText"></Menu>
-          <Choice @submit.prevent="addChoice()" v-bind:choiceLabel="newMenu.choiceLabel1" v-bind:labelArray="labels" v-bind:choice="newMenu.choice1"></Choice> -->
-            <form>
               <p>Menu: <select name="labels" v-model="newMenu.menuName">
                 <option v-for="label in labels">{{ label.name }}</option>
                </select></p>
@@ -89,15 +80,15 @@
                 <option v-for="label in labels">{{ label.name }}</option>
               </select></p>
               <p>Choice 2 text: <input type="text" name="choice1" v-model="newMenu.choice2"></p>
-              <component v-for="field in fields" v-bind:is="field.type" :key="field.id"></component>
-              <button type="button" v-on:click="addFormElement('choice-select')">Add Choice</button>
+              <button type="button">Add Choice</button>
+              <hr>
+
+              <!-- <button v-on:click="Generate()">Generate draft</button> -->
+              <form v-on:submit.prevent="Generate()"> <!--Generate button-->
+                <button type="submit">Generate</button>
+              </form>
             </form>
-      <hr>
-          <button v-on:click="Generate()">Genera draft</button>
-            <form v-on:submit.prevent="Generate()"> <!--Generate button-->
-              <button type="submit">Generate</button>
-            </form>
-        </div>
+          </div>
       </div>
     </section>
   </section>
@@ -105,26 +96,13 @@
   <!--Right segment end-->    
 </template>
 
-<script type="x-template" id="choice-select">
-  <p>Choice 1 label: <select name="labels" v-model="newMenu.choiceLabel1">
-    <option v-for="label in labels">{{ label.name }}</option>
-  </select></p>
-  <p>Choice 1 text: <input type="text" name="choice1" v-model="newMenu.choice1"></p>
-</script>
-
 <script>
 import axios from "axios";
-import Label from "@/components/Label.vue";
-//var choiceSelect = Vue.component('choice-select', {
-//  template: '#choice-select'
-//
 export default {
   data: function() {
     return {
       output: "",
       message: "Hello world!",
-      fields: [],
-      count: 0,
       characters: [],
       newCharacter: {
         firstName: " ",
@@ -134,12 +112,18 @@ export default {
       newScene: {
         sceneName: " "
       },
+      // listOfScenes: [],
+      // selectedScenes: [],
+
+      // listOfTransitions: [],
+      // selectedTransitions: [],
+
       labels: [],
       newLabel: {
         labelName: null
       },
-      listOfLabels: [],
-      selectedLabels: [],
+      // listOfLabels: [],
+      // selectedLabels: [],
 
       transitions: [],
       newTransition: {
@@ -165,23 +149,25 @@ export default {
       this.characters = response.data;
     });
     axios.get("/api/background_images").then(response => {
-      this.background_images = response.data;    
+      this.background_images = response.data;
+      // this.listOfScenes = [this.background_images]    
     });
     axios.get("/api/transitions").then(response => {
-      this.transitions = response.data;    
+      this.transitions = response.data;
+      // this.listOfTransitions = [this.transitions]    
     });
     axios.get("/api/labels").then(response => {
       this.labels = response.data;
-      this.listOfLabels = [this.labels]    
+      // this.listOfLabels = [this.labels]    
     })
-  },
-  components: {
-    Label
   },
   methods: {
     Generate: function() {
       console.log('translating into RenPy syntax');
+      console.log(this.selectedTransitions);
       console.log(this.selectedLabels);
+      console.log(this.selectedScenes);
+      console.log(this.selectedTransitions);
       var params = {
         input_first_name: this.newCharacter.firstName,
         input_color: this.newCharacter.color,
@@ -201,10 +187,6 @@ export default {
       axios.post("/api/drafts", params).then(response => {
       this.output = response.data;
       });
-    // },
-    // setColor: function(event) {
-    //   console.log('setting color')
-    //   console.log(event);
     },
     findCharacterColor: function() {
       var characterName = this.newCharacter.firstName;
@@ -212,15 +194,16 @@ export default {
     },
     formIsValid: function() {
       return this.newLabel.labelName;
-    },
-    addLabel: function() {
-      this.listOfLabels.push(this.labels)
     }
-    // addFormElement: function(type) {
-    //   this.fields.push({
-    //     'type': type,
-    //     id: this.count++
-    //   });
+    // addLabel: function() {
+    //   this.listOfLabels.push(this.labels);
+    // },
+    // addScene: function() {
+    //   this.listOfScenes.push(this.background_images);
+    // },
+    // addTransition: function() {
+    //   this.listOfTransitions.push(this.transitions);      
+    // }
   }
 };
 </script>
