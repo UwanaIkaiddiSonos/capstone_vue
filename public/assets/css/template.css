@@ -20,6 +20,12 @@ body {
     overflow-x: hidden;
 }
 
+div.new1 {
+  border: 1px solid red;
+  border-radius: 15px;
+  padding: 10px;
+}
+
 img {
     max-width: 100%;
     height: auto;
@@ -326,6 +332,9 @@ blockquote:before {
 .btn-lg {
     padding: 16px 40px 14px;
     font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 12px;
 }
 
 .btn-sm {
