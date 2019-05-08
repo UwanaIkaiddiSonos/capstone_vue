@@ -21,24 +21,24 @@
               <!-- Label Section -->
               <!-- <button v-on:click.prevent="addLabel()">Add new label dropdown</button> -->
                 <!-- <div v-for="oneLabel, $index in listOfLabels"> -->
-                <div class="new1">
-                  <p>Label:  
-                  <select v-model="newLabel.labelName">
-                    <option v-for="label in labels">{{ label.name }}</option>
-                  </select></p>
-                </div>
               <!-- </div> -->
               </form>
               <hr class="new1">
-
+              <button v-on:click="addField('Label')">Label</button>
               <button v-on:click="addField('Transition')">Transition</button>
               <button v-on:click="addField('Character')">Character</button>
-              <!-- <button v-on:click="addField('Dialogue')">Dialogue</button> -->
               <button v-on:click="addField('Scene')">Scene</button>
               <button v-on:click="addField('Dialogue')">Dialogue</button>
               <button v-on:click="addField('Menu')">Menu</button>
               <div v-for="input in arrayOfFieldInputs">
                 {{ input }}
+
+                <div v-if="input.type === 'Label'">
+                  <p>Label:  
+                  <select v-model="input.userInput">
+                    <option v-for="label in labels">{{ label.name }}</option>
+                  </select></p>
+                </div>
                 <div v-if="input.type === 'Transition'">
                   <p>Transition:  
                       <select v-model="input.userInput" v-on:change="printArray()">
@@ -51,6 +51,9 @@
                       <select v-model="input.userInput" v-on:change="printArray()">
                         <option v-for="character in characters">{{ character.first_name }}</option>
                       </select>
+                  </p>
+                  <p>Color:
+                    <input type="color" v-model="input.color">
                   </p>
                 </div>
                 <div v-if="input.type === 'Scene'">
@@ -82,6 +85,7 @@
                 </select></p>
               </div>
             </div>
+            <input type="submit" value="Generate" v-on:click="Generate()">
           </div>
         </div>
       </div>
@@ -161,28 +165,12 @@ export default {
   methods: {
     Generate: function() {
       console.log('translating into RenPy syntax');
-      console.log(this.selectedTransitions);
-      console.log(this.selectedLabels);
-      console.log(this.selectedScenes);
-      console.log(this.selectedTransitions);
+      console.log(this.arrayOfFieldInputs);
       var params = {
-        input_first_name: this.newCharacter.firstName,
-        input_color: this.newCharacter.color,
-        input_label_name: this.newLabel.labelName,
-        input_scene_name: this.newScene.sceneName,
-        input_transition_name: this.newTransition.transitionName,
-        input_dialogue: this.newDialogue.dialogueText,
-        input_menu: this.newMenu.menuName,
-        input_intro: this.newMenu.introText,
-        input_choice1_label: this.newMenu.choice1,
-        input_choice1: this.newMenu.choiceLabel1,
-        input_choice2_label: this.newMenu.choice2,
-        input_choice2: this.newMenu.choiceLabel2
-
+        fieldInputs: this.arrayOfFieldInputs
       }
-      console.log(params)
       axios.post("/api/drafts", params).then(response => {
-      this.output = response.data;
+        this.output = response.data;
       });
     },
     findCharacterColor: function() {
@@ -199,6 +187,9 @@ export default {
       }
       else if (fieldType === 'Menu') {
         this.arrayOfFieldInputs.push({type: fieldType, intro: "", choice1: "", choice1_label: "", choice2: "", choice2_label: ""});
+      }
+      else if (fieldType === 'Character') {
+        this.arrayOfFieldInputs.push({type: fieldType, userInput: "", color: ""})
       }
       else {
         this.arrayOfFieldInputs.push({type: fieldType, userInput: ""});
