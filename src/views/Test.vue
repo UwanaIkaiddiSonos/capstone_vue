@@ -30,6 +30,7 @@
               <button v-on:click="addField('Scene')">Scene</button>
               <button v-on:click="addField('Dialogue')">Dialogue</button>
               <button v-on:click="addField('Menu')">Menu</button>
+              <button v-on:click="addField('CharacterImage')">Character Image</button>
               <div v-for="input in arrayOfFieldInputs">
                 {{ input }}
 
@@ -54,6 +55,13 @@
                   </p>
                   <p>Color:
                     <input type="color" v-model="input.color">
+                  </p>
+                </div>
+                <div v-if="input.type === 'CharacterImage'">
+                  <p>Character Image:  
+                    <select v-model="input.userInput" v-on:change="printArray()">
+                      <option v-for="image in images">{{ image.name }}</option>
+                    </select>
                   </p>
                 </div>
                 <div v-if="input.type === 'Scene'">
@@ -108,6 +116,11 @@ export default {
         firstName: " ",
         color: " "
       },
+      images: [
+        {
+          name: "sylvie green smile"
+        }
+      ],
       background_images: [],
       newScene: {
         sceneName: " "
