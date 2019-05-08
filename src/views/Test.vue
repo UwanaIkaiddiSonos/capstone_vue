@@ -1,0 +1,222 @@
+<template>
+  <div class="wrapper">
+  <!--Left segment-->
+  <section class="split-image parallax" data-background="assets/images/girl_reading.jpg">
+    <div class="container-fluid container-custom">
+      <br><br>
+        <textarea readonly name="final" rows="10" cols="50">{{ output['output'] }}</textarea>
+    </div>
+  </section>
+  <!--Left segment end-->
+  <!--Right segment-->
+  <section class="split-content">
+    <!--Insert content here-->
+    <section class="module">
+      <div class="container-fluid container-custom">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="test">
+              <h1>EasyPy Converter</h1>
+              <form>
+              <!-- Label Section -->
+              <!-- <button v-on:click.prevent="addLabel()">Add new label dropdown</button> -->
+                <!-- <div v-for="oneLabel, $index in listOfLabels"> -->
+                <div class="new1">
+                  <p>Label:  
+                  <select v-model="newLabel.labelName">
+                    <option v-for="label in labels">{{ label.name }}</option>
+                  </select></p>
+                </div>
+              <!-- </div> -->
+              </form>
+              <hr class="new1">
+
+              <button v-on:click="addField('Transition')">Transition</button>
+              <button v-on:click="addField('Character')">Character</button>
+              <!-- <button v-on:click="addField('Dialogue')">Dialogue</button> -->
+              <button v-on:click="addField('Scene')">Scene</button>
+              <button v-on:click="addField('Dialogue')">Dialogue</button>
+              <button v-on:click="addField('Menu')">Menu</button>
+              <div v-for="input in arrayOfFieldInputs">
+                {{ input }}
+                <div v-if="input.type === 'Transition'">
+                  <p>Transition:  
+                      <select v-model="input.userInput" v-on:change="printArray()">
+                        <option v-for="transition in transitions">{{ transition.name }}</option>
+                      </select>
+                  </p>
+                </div>
+                <div v-if="input.type === 'Character'">
+                  <p>Character:  
+                      <select v-model="input.userInput" v-on:change="printArray()">
+                        <option v-for="character in characters">{{ character.first_name }}</option>
+                      </select>
+                  </p>
+                </div>
+                <div v-if="input.type === 'Scene'">
+                  <p>Scene:  
+                      <select v-model="input.userInput" v-on:change="printArray()">
+                        <option v-for="scene in background_images">{{ scene.scene_name }}</option>
+                      </select>
+                  </p>
+                </div>
+                <div v-if="input.type === 'Dialogue'">
+                  <select v-model="input.character" v-on:change="printArray()">
+                    <option v-for="character in characters">{{ character.first_name }}</option>
+                  </select>
+                  <p>Dialogue: <textarea name="dialogue" v-model="input.userInput" rows="2" cols="30"> 
+                  Enter your character's dialogue...
+                </textarea>
+                </p>
+              </div>
+              <div v-if="input.type === 'Menu'">
+                <p>Menu: </p>
+                <p>Intro line: <input type="text" v-model="input.intro" name="intro_line"></p>
+                <p>Choice 1 text: <input type="text" name="choice1" v-model="input.choice1"></p>
+                <p>Choice 1 label: <select name="labels" v-model="input.choice1_label">
+                  <option v-for="label in labels">{{ label.name }}</option>
+                </select></p>
+                <p>Choice 2 text: <input type="text" name="choice1" v-model="input.choice2"></p>
+                <p>Choice 2 label: <select name="labels" v-model="input.choice2_label">
+                  <option v-for="label in labels">{{ label.name }}</option>
+                </select></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+  </section>
+  </div>
+  <!--Right segment end-->    
+</template>
+
+<script>
+import axios from "axios";
+export default {
+  data: function() {
+    return {
+      output: "",
+      message: "Hello world!",
+      characters: [],
+      newCharacter: {
+        firstName: " ",
+        color: " "
+      },
+      background_images: [],
+      newScene: {
+        sceneName: " "
+      },
+      // listOfScenes: [],
+      // selectedScenes: [],
+
+      // listOfTransitions: [],
+      // selectedTransitions: [],
+
+      labels: [],
+      newLabel: {
+        labelName: null
+      },
+      // listOfLabels: [],
+      // selectedLabels: [],
+
+      transitions: [],
+      newTransition: {
+        transitionName: " "
+      },
+      dialogues: [],
+      newDialogue: {
+        dialogueText: " "
+      },
+      menu: [],
+      newMenu: {
+        menuName: " ",
+        introText: " ",
+        choice1: " ",
+        choiceLabel1: " ",
+        choice2: " ",
+        choiceLabel2: " "
+      },
+      arrayOfFieldInputs: [],
+    };
+  },
+  created: function() {
+    axios.get("/api/characters").then(response => {
+      this.characters = response.data;
+    });
+    axios.get("/api/background_images").then(response => {
+      this.background_images = response.data;
+      // this.listOfScenes = [this.background_images]    
+    });
+    axios.get("/api/transitions").then(response => {
+      this.transitions = response.data;
+      // this.listOfTransitions = [this.transitions]    
+    });
+    axios.get("/api/labels").then(response => {
+      this.labels = response.data;
+      // this.listOfLabels = [this.labels]    
+    })
+  },
+  methods: {
+    Generate: function() {
+      console.log('translating into RenPy syntax');
+      console.log(this.selectedTransitions);
+      console.log(this.selectedLabels);
+      console.log(this.selectedScenes);
+      console.log(this.selectedTransitions);
+      var params = {
+        input_first_name: this.newCharacter.firstName,
+        input_color: this.newCharacter.color,
+        input_label_name: this.newLabel.labelName,
+        input_scene_name: this.newScene.sceneName,
+        input_transition_name: this.newTransition.transitionName,
+        input_dialogue: this.newDialogue.dialogueText,
+        input_menu: this.newMenu.menuName,
+        input_intro: this.newMenu.introText,
+        input_choice1_label: this.newMenu.choice1,
+        input_choice1: this.newMenu.choiceLabel1,
+        input_choice2_label: this.newMenu.choice2,
+        input_choice2: this.newMenu.choiceLabel2
+
+      }
+      console.log(params)
+      axios.post("/api/drafts", params).then(response => {
+      this.output = response.data;
+      });
+    },
+    findCharacterColor: function() {
+      var characterName = this.newCharacter.firstName;
+      console.log(this.characters.indexOf(characterName));
+    },
+    formIsValid: function() {
+      return this.newLabel.labelName;
+    },
+    addField: function(fieldType) {
+      console.log(fieldType);
+      if (fieldType === 'Dialogue') {
+        this.arrayOfFieldInputs.push({type: fieldType, userInput: "", character: ""});
+      }
+      else if (fieldType === 'Menu') {
+        this.arrayOfFieldInputs.push({type: fieldType, intro: "", choice1: "", choice1_label: "", choice2: "", choice2_label: ""});
+      }
+      else {
+        this.arrayOfFieldInputs.push({type: fieldType, userInput: ""});
+      }
+      console.log(this.arrayOfFieldInputs);
+    },
+    printArray: function() {
+      console.log(this.arrayOfFieldInputs);
+    }
+    // addLabel: function() {
+    //   this.listOfLabels.push(this.labels);
+    // },
+    // addScene: function() {
+    //   this.listOfScenes.push(this.background_images);
+    // },
+    // addTransition: function() {
+    //   this.listOfTransitions.push(this.transitions);      
+    // }
+  }
+};
+</script>
