@@ -1,7 +1,8 @@
 <template>
       <div class="wrapper">
     <!-- Left segment-->
-      <section class="split-image parallax" data-background="assets/images/module-7.jpg">
+      <section class="split-image parallax" data-background="assets/images/girl_reading.jpg">
+        Testing
         <!-- Insert content here -->
       </section>
     <!-- Left segment end-->
@@ -47,7 +48,7 @@ import axios from "axios";
 export default {
   data: function() {
     return {
-      message: "Hello world!",
+      message: "Component Addition",
       newCharacter: {
         firstName: "",
         lastName: "",
