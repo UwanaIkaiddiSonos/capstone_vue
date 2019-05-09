@@ -4,7 +4,9 @@
   <section class="split-image parallax" data-background="assets/images/girl_reading.jpg">
     <div class="container-fluid container-custom">
       <br><br>
-        <textarea readonly name="final" rows="10" cols="50">{{ output['output'] }}</textarea>
+        <div class="center">
+          <textarea readonly name="final" rows="20" cols="60">{{ output['output'] }}</textarea>
+        </div>
     </div>
   </section>
   <!--Left segment end-->
@@ -16,7 +18,19 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="test">
-              <h1>EasyPy Converter</h1>
+              <!-- Instructions -->
+              <div class="center">
+                <h1>EasyPy Converter</h1>
+              </div>
+                <h3>Instructions</h3>
+                <ol>
+                  <li>Start by adding a <button class="btn-sm" v-on:click="addField('Character')">Character</button></li>
+                  <li>Then add a <button class="btn-sm" v-on:click="addField('Label')">Path</button></li>
+                  <li>Set up the <button class="btn-sm" v-on:click="addField('Scene')">Scene</button> and <button class="btn-sm" v-on:click="addField('Transition')">Transition</button></li>
+                  <li>Add a <button class="btn-sm" v-on:click="addField('CharacterImage')">Character Image</button></li>
+                  <li>Throw in some <button class="btn-sm" v-on:click="addField('Dialogue')">Dialogue</button></li>
+                  <li>End with a <button class="btn-sm" v-on:click="addField('Menu')">Choice</button></li>
+                </ol>
               <form>
               <!-- Label Section -->
               <!-- <button v-on:click.prevent="addLabel()">Add new label dropdown</button> -->
@@ -24,21 +38,22 @@
               <!-- </div> -->
               </form>
               <hr class="new1">
-              <button v-on:click="addField('Label')">Label</button>
+              <!-- <button v-on:click="addField('Label')">Path</button>
               <button v-on:click="addField('Transition')">Transition</button>
               <button v-on:click="addField('Character')">Character</button>
               <button v-on:click="addField('Scene')">Scene</button>
               <button v-on:click="addField('Dialogue')">Dialogue</button>
-              <button v-on:click="addField('Menu')">Menu</button>
-              <button v-on:click="addField('CharacterImage')">Character Image</button>
+              <button v-on:click="addField('Menu')">Choice</button>
+              <button v-on:click="addField('CharacterImage')">Character Image</button> -->
               <div v-for="input in arrayOfFieldInputs">
-                {{ input }}
+                
 
                 <div v-if="input.type === 'Label'">
-                  <p>Label:  
+                  <p>Path:  
                   <select v-model="input.userInput">
                     <option v-for="label in labels">{{ label.name }}</option>
                   </select></p>
+                  <hr>
                 </div>
                 <div v-if="input.type === 'Transition'">
                   <p>Transition:  
@@ -46,6 +61,7 @@
                         <option v-for="transition in transitions">{{ transition.name }}</option>
                       </select>
                   </p>
+                  <hr>
                 </div>
                 <div v-if="input.type === 'Character'">
                   <p>Character:  
@@ -56,6 +72,7 @@
                   <p>Color:
                     <input type="color" v-model="input.color">
                   </p>
+                  <hr>
                 </div>
                 <div v-if="input.type === 'CharacterImage'">
                   <p>Character Image:  
@@ -63,6 +80,7 @@
                       <option v-for="image in images">{{ image.name }}</option>
                     </select>
                   </p>
+                  <hr>
                 </div>
                 <div v-if="input.type === 'Scene'">
                   <p>Scene:  
@@ -70,18 +88,19 @@
                         <option v-for="scene in background_images">{{ scene.scene_name }}</option>
                       </select>
                   </p>
+                  <hr>
                 </div>
                 <div v-if="input.type === 'Dialogue'">
-                  <select v-model="input.character" v-on:change="printArray()">
+                  Speaker: <select v-model="input.character" v-on:change="printArray()">
                     <option v-for="character in characters">{{ character.first_name }}</option>
-                  </select>
-                  <p>Dialogue: <textarea name="dialogue" v-model="input.userInput" rows="2" cols="30"> 
-                  Enter your character's dialogue...
-                </textarea>
+                  </select><br>
+                  <p>Dialogue: <input type="text" v-model="input.userInput" rows="2" cols="30"> 
+                </input>
                 </p>
+                <hr>
               </div>
               <div v-if="input.type === 'Menu'">
-                <p>Menu: </p>
+                <p>Choice Menu: </p>
                 <p>Intro line: <input type="text" v-model="input.intro" name="intro_line"></p>
                 <p>Choice 1 text: <input type="text" name="choice1" v-model="input.choice1"></p>
                 <p>Choice 1 label: <select name="labels" v-model="input.choice1_label">
@@ -91,9 +110,10 @@
                 <p>Choice 2 label: <select name="labels" v-model="input.choice2_label">
                   <option v-for="label in labels">{{ label.name }}</option>
                 </select></p>
+                <hr>
               </div>
             </div>
-            <input type="submit" value="Generate" v-on:click="Generate()">
+            <input class="btn-lg" type="submit" value="Generate" v-on:click="Generate()">
           </div>
         </div>
       </div>
@@ -118,7 +138,16 @@ export default {
       },
       images: [
         {
+          name: "sylvie green normal"
+        },
+        {
           name: "sylvie green smile"
+        },
+        {
+          name: "sylvie green giggle"
+        },
+        {
+          name: "sylvie green surprised"
         }
       ],
       background_images: [],
@@ -177,8 +206,8 @@ export default {
   },
   methods: {
     Generate: function() {
-      console.log('translating into RenPy syntax');
-      console.log(this.arrayOfFieldInputs);
+      // console.log('translating into RenPy syntax');
+      // console.log(this.arrayOfFieldInputs);
       var params = {
         fieldInputs: this.arrayOfFieldInputs
       }
@@ -188,13 +217,13 @@ export default {
     },
     findCharacterColor: function() {
       var characterName = this.newCharacter.firstName;
-      console.log(this.characters.indexOf(characterName));
+      // console.log(this.characters.indexOf(characterName));
     },
     formIsValid: function() {
       return this.newLabel.labelName;
     },
     addField: function(fieldType) {
-      console.log(fieldType);
+      // console.log(fieldType);
       if (fieldType === 'Dialogue') {
         this.arrayOfFieldInputs.push({type: fieldType, userInput: "", character: ""});
       }
@@ -207,7 +236,7 @@ export default {
       else {
         this.arrayOfFieldInputs.push({type: fieldType, userInput: ""});
       }
-      console.log(this.arrayOfFieldInputs);
+      // console.log(this.arrayOfFieldInputs);
     },
     printArray: function() {
       console.log(this.arrayOfFieldInputs);

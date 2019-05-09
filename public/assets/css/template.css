@@ -21,9 +21,25 @@ body {
 }
 
 div.new1 {
-  border: 1px solid red;
+  border: 2px solid black;
   border-radius: 15px;
   padding: 10px;
+}
+
+div.center {
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+}
+
+hr.new1 {
+    border: 2px solid black;
+}
+
+hr {
+    border: 1px solid black;
+}
+
 }
 
 img {
@@ -330,16 +346,16 @@ blockquote:before {
 /* --- [Button Sizes] --- */
 
 .btn-lg {
-    padding: 16px 40px 14px;
-    font-size: 13px;
+    padding: 14px 38px 12px;
+    font-size: 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .btn-sm {
-    padding: 9px 19px 9px;
-    font-size: 11px;
+    padding: 6px 16px 6px;
+    font-size: 16px;
 }
 
 /* --- [Button Colors] --- */

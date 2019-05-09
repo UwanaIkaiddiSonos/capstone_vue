@@ -2,7 +2,6 @@
       <div class="wrapper">
     <!-- Left segment-->
       <section class="split-image parallax" data-background="assets/images/girl_reading.jpg">
-        Testing
         <!-- Insert content here -->
       </section>
     <!-- Left segment end-->
